@@ -6,59 +6,39 @@ Random rand = new();
 var restClient = new RestClient(Url);
 
 Register();
-Move();
 
-void Move()
+while (true)
 {
-  while (true)
+  switch (rand.Next(4))
   {
-    switch (rand.Next(4))
-    {
-      case 0:
-        MoveUp();
-        break;
-      case 1:
-        MoveRight();
-        break;
-      case 2:
-        MoveDown();
-        break;
-      case 3:
-        MoveLeft();
-        break;
-    }
+    case 0:
+      MoveUp();
+      break;
+    case 1:
+      MoveRight();
+      break;
+    case 2:
+      MoveDown();
+      break;
+    case 3:
+      MoveLeft();
+      break;
   }
+  Thread.Sleep(1000);
 }
 
-void MoveUp() => world = SendMoveCommand("moveUp");
-void MoveDown() => world = SendMoveCommand("moveDown");
-void MoveRight() => world = SendMoveCommand("moveRight");
-void MoveLeft() => world = SendMoveCommand("moveleft");
-
-ResponseViewModel SendMoveCommand(string moveCommand)
-{
-  Thread.Sleep(1000); //Requests more frequent than once per second will fail.
-  CheckForRegistration();
-  return restClient.GetJson<ResponseViewModel>($"{moveCommand}/{world.Id}");
-}
-
-void Look()
-{
-  Thread.Sleep(1000); //Requests more frequent than once per second will fail.
-  CheckForRegistration();
-  world = restClient.GetJson<ResponseViewModel>($"look/{world.Id}");
-}
-
-void CheckForRegistration()
-{
-  if (world == null) throw new InvalidOperationException("You have to register as a player before you can move");
-}
+void MoveUp() => world = restClient.GetJson<ResponseViewModel>($"moveup/{world.Id}");
+void MoveDown() => world = restClient.GetJson<ResponseViewModel>($"movedown/{world.Id}");
+void MoveRight() => world = restClient.GetJson<ResponseViewModel>($"moveright/{world.Id}");
+void MoveLeft() => world = restClient.GetJson<ResponseViewModel>($"moveleft/{world.Id}");
+void Look() => world = restClient.GetJson<ResponseViewModel>($"look/{world.Id}");
 
 void Register()
 {
   world = restClient.GetJson<ResponseViewModel>("register");
   Console.WriteLine("You have successfully registered!");
   Console.WriteLine("Your player name is {0} and your id is {1}", world.Name, world.Id);
+  Thread.Sleep(1000);
 }
 
 record ResponseViewModel
