@@ -1,7 +1,5 @@
 <?php
 
-echo 'Hello world';
-
 class XorTag {
     private $baseUrl = 'https://xortag.azurewebsites.net/';
     private $world;
